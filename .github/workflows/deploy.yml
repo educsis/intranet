@@ -1,31 +1,35 @@
-name: FTP Deploy Incremental
+name: FTP Deploy (CodeIgniter 3)
 
 on:
   push:
     branches:
-      - main # or your chosen deploy branch
+      - main # Change if you deploy from another branch
 
 jobs:
   ftp-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy via FTP (only changed files)
+      # 2. Deploy using FTP-Deploy-Action
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftp # or ftps if supported
-          local-dir: ./ # root of your repo
-          server-dir: /public_html/ # adjust to your server path
+          port: 21
+          protocol: ftps
+          local-dir: ./ # Repo root
+          server-dir: /public_html/ # Adjust to your CodeIgniter folder
+          exclude: | # Exclude unnecessary/writable dirs
+            **/.git*
+            **/.github*
+            application/cache/**
+            application/logs/**
+            application/config/development/**
           dry-run: false
-          # Optional:
-          # dangerous-clean-slate: false
-          # exclude: |
-          #   **/.git*
-          #   application/cache/**
-          #   application/logs/**
+          debug: true # Helpful for troubleshooting
