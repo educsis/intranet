@@ -1,9 +1,9 @@
-name: FTP Deploy
+name: FTP Deploy Incremental
 
 on:
   push:
     branches:
-      - main # Change if you deploy from another branch
+      - main # or your chosen deploy branch
 
 jobs:
   ftp-deploy:
@@ -11,13 +11,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4
+      - name: Deploy via FTP (only changed files)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./ # Upload everything in the repository root
-          server-dir: /public_html/ # Adjust to your CodeIgniter folder on the server
+          protocol: ftp # or ftps if supported
+          local-dir: ./ # root of your repo
+          server-dir: /public_html/ # adjust to your server path
+          dry-run: false
+          # Optional:
+          # dangerous-clean-slate: false
+          # exclude: |
+          #   **/.git*
+          #   application/cache/**
+          #   application/logs/**
