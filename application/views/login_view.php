@@ -31,7 +31,7 @@
           <div>
             <h2><img src="<?= base_url('assets/img/logo.png') ?>" style="width: 220px;"></h2>
             <hr>
-            <p>INTRANET TEST PUSH</p>
+            <p>INTRANET TEST</p>
           </div>
         </div>
         <div class="col-lg-7">
