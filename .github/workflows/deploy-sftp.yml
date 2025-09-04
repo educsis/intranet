@@ -1,4 +1,4 @@
-name: SFTP Deploy (CodeIgniter 3)
+name: FTP Deploy (CodeIgniter 3)
 
 on:
   push:
@@ -6,21 +6,28 @@ on:
       - main
 
 jobs:
-  sftp-deploy:
+  ftp-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy with SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      - name: Deploy via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          port: 21 # or 22 if your host only supports SSH/SFTP
-          local_path: ./ # repo root
-          remote_path: /home/netflix.fun/public_html/
-          sftp_only: true
-          sftpArgs: "-o StrictHostKeyChecking=no"
+          server: ${{ secrets.FTP_HOST }} # 91.204.209.211
+          username: ${{ secrets.FTP_USERNAME }} # edwin@edflix.fun
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          security: explicit # matches "Use explicit FTP over TLS"
+          local-dir: ./ # repo root
+          server-dir: /public_html/ # adjust to your CodeIgniter folder
+          exclude: |
+            **/.git*
+            **/.github*
+            application/cache/**
+            application/logs/**
+            application/config/development/**
+          log-level: verbose
