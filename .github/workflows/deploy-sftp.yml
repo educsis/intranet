@@ -1,0 +1,33 @@
+name: SFTP Deploy (CodeIgniter 3)
+
+on:
+  push:
+    branches:
+      - main # only deploy from main branch
+
+jobs:
+  sftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Deploy via SFTP
+      - name: SFTP Deploy
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.SFTP_HOST }} # e.g. yourdomain.com or IP
+          username: ${{ secrets.SFTP_USERNAME }} # your SSH user
+          password: ${{ secrets.SFTP_PASSWORD }} # or use private-key below
+          port: 22
+          local_path: ./ # repo root
+          remote_path: /home/domains/edflix.fun/public_html/ # adjust to your server path
+          args: "-o StrictHostKeyChecking=no" # skip known_hosts check
+          exclude: | # don’t upload these
+            **/.git*
+            **/.github*
+            application/cache/**
+            application/logs/**
+            application/config/development/**
