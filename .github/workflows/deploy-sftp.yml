@@ -3,26 +3,24 @@ name: SFTP Deploy (CodeIgniter 3)
 on:
   push:
     branches:
-      - main # only deploy from main
+      - main
 
 jobs:
   sftp-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Deploy files over SFTP
-      - name: SFTP Deploy
+      - name: Deploy with SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.SFTP_HOST }}
           username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }} # or ssh_private_key instead
-          port: 22
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 21 # or 22 if your host only supports SSH/SFTP
           local_path: ./ # repo root
-          remote_path: /home/youruser/public_html/ # adjust to your server
+          remote_path: /home/netflix.fun/public_html/
           sftp_only: true
           sftpArgs: "-o StrictHostKeyChecking=no"
